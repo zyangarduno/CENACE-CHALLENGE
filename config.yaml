@@ -1,0 +1,21 @@
+api:
+  base_url: "https://ws01.cenace.gob.mx:8082/SWPML/SIM"
+  sistema: "SIN"
+  proceso: "MDA"            
+  formato: "JSON"
+  max_days_per_request: 7
+
+period:
+  start: "2024-01-01"
+  end: "2025-06-30"
+
+nodes:
+  - "06AEO-115"
+  - "06AHM-400"
+  - "06FRO-115"
+  - "06GRA-115"
+  - "06MON-115"
+  - "06MON-230"
+  - "06RGS-115"
+  - "06TKS-115"
+  - "06XOC-115"
