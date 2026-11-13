@@ -3,7 +3,7 @@ api:
   sistema: "SIN"
   proceso: "MDA"            
   formato: "JSON"
-  max_days_per_request: 7
+  max_days_per_request: 7 #7 days since the CENACE manual estates that consult period can only be for a max of 7 days
 
 period:
   start: "2024-01-01"
