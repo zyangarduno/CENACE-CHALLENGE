@@ -29,3 +29,6 @@ modeling:
   split_date: "2025-04-01"     
   peak_hours: [18, 19, 20, 21]
   lags: [24, 48, 168]             
+
+#Setting up the modeling configuration, last training month for XGBoost model training
+  val_start: "2025-03-01"      
