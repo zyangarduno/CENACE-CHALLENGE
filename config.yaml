@@ -19,3 +19,13 @@ nodes:
   - "06RGS-115"
   - "06TKS-115"
   - "06XOC-115"
+
+  #Adding settings for modeling, pml is what we are trying to predict, date is used to separate training data from test data, we are training on past 
+  #to predict future, based on common 80/20 split. Also choosing a date with most volatility, kmay prices begin to raise, predictionn can be biases if I use the calm months only
+  #same with hours, using the most expensive hours, this is where users find the tool more beneficial.\
+  #Lags are the price N hours before the hour you’re predicting, 24, 48 and 168. 
+modeling:
+  target: "pml"
+  split_date: "2025-04-01"     
+  peak_hours: [18, 19, 20, 21]
+  lags: [24, 48, 168]             
