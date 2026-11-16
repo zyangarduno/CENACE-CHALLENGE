@@ -53,7 +53,9 @@ CHALLENGE OBJECTIVES
 
 Build a reproducible, production-ready analytics pipeline for the Local Marginal Price (LMP) of the nine Monclova load-zone nodes (Jan 1, 2024 – Jun 30, 2025). 
 
-USE YAML TO CHANGE CONFIGURATION
+HOW TO RUN
+python run_pipeline.py                  # full run, including download
+python run_pipeline.py --skip-extract   # reuse the saved dataset
 
 LIVE DASHBOARD
 https://cenace-challenge-tzqpi8grwfoqd8amtdpxve.streamlit.app/
@@ -61,3 +63,4 @@ https://cenace-challenge-tzqpi8grwfoqd8amtdpxve.streamlit.app/
 TO REPRODUCE
 pip install -r requirements.txt
 streamlit run app/dashboard.py
+
