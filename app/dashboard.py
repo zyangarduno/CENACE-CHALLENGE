@@ -53,3 +53,50 @@ if len(period) == 2:
     table = flagged[["timestamp", "Actual price", "XGBoost forecast", "Miss (MXN/MWh)", "Direction", "z_model"]]
     st.dataframe(table.rename(columns={"z_model": "Deviation score"}).round(1),
                  use_container_width=True, hide_index=True)
+
+# ---------------------------------------------------------------- Day planner
+st.divider()
+st.header("Day planner")
+st.caption("Forecast for one day, colored by price level, and the cheapest window for a flexible load.")
+
+p1, p2, p3 = st.columns(3)
+plan_day  = p1.date_input("Day", df["timestamp"].max().date(),
+                          min_value=df["timestamp"].min().date(), max_value=df["timestamp"].max().date(),
+                          key="plan_day")
+load_mw   = p2.number_input("Flexible load (MW)", min_value=0.1, value=5.0, step=0.5)
+run_hours = p3.slider("Hours it needs to run", 1, 12, 4)
+
+day = df[(df["clv_nodo"] == node) & (df["timestamp"].dt.date == plan_day)].sort_values("timestamp").reset_index(drop=True)
+
+if len(day) == 24:
+    # Price level of each hour, relative to that day's own forecast
+    low, high = day["pred_xgb"].quantile([1/3, 2/3])
+    day["Level"] = day["pred_xgb"].apply(lambda v: "Cheap" if v <= low else ("Expensive" if v > high else "Medium"))
+    day["Hour"] = day["timestamp"].dt.strftime("%H:%M")
+
+    fig_day = px.bar(day, x="Hour", y="pred_xgb", color="Level",
+                     color_discrete_map={"Cheap": "#2EC4B6", "Medium": "#FFD166", "Expensive": "#EF476F"},
+                     category_orders={"Hour": day["Hour"].tolist(), "Level": ["Cheap", "Medium", "Expensive"]},
+                     labels={"pred_xgb": "Forecast price (MXN/MWh)"})
+    fig_day.add_scatter(x=day["Hour"], y=day["pml"], mode="lines+markers", name="Actual price",
+                        line=dict(color="#F5F5F5"))
+    st.plotly_chart(fig_day, use_container_width=True)
+
+    # Cheapest consecutive window according to the forecast
+    starts = range(0, 24 - run_hours + 1)
+    best  = min(starts, key=lambda s: day["pred_xgb"].iloc[s:s + run_hours].sum())
+    worst = max(starts, key=lambda s: day["pred_xgb"].iloc[s:s + run_hours].sum())
+    energy = load_mw * run_hours                                   # MWh for the run
+
+    cost_best  = day["pml"].iloc[best:best + run_hours].mean()  * energy    # what it really cost
+    cost_worst = day["pml"].iloc[worst:worst + run_hours].mean() * energy
+
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Recommended start", day["Hour"].iloc[best])
+    c2.metric("Cost in recommended window", f"{cost_best:,.0f} MXN")
+    c3.metric("Saved vs. most expensive window", f"{cost_worst - cost_best:,.0f} MXN",
+              f"{(1 - cost_best / cost_worst) * 100:.0f}% lower" if cost_worst > 0 else None)
+    st.caption(f"Window chosen from the forecast, cost measured with actual prices (backtest). "
+               f"Most expensive forecast window starts at {day['Hour'].iloc[worst]}.")
+else:
+    st.info("No complete day of data for this date.")    
