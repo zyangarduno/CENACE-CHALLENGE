@@ -5,10 +5,7 @@ CENACE (Centro Nacional de Control de Energía) is the air traffic control of Me
 *   Keep the transmission network from overloading.
 *   Run the wholesale electricity market (MEM, Mercado Eléctrico Mayorista) and publish its prices.
 
-The 2025 energy reform kept this role. Under the new Ley del Sector Eléctrico, CENACE, as the independent system operator, will continue operating the national grid, administering the Wholesale Electricity Market and determining the works needed to expand it. The new law also established CFE’s prevalence in generation (at least 54 percent) and confirmed the existence of the MEM under state direction. The market and its price data still exist. The rules around them have shifted.
-
-How the price gets set (the key idea)
-Imagine CENACE running an auction every hour:
+How the price gets set
 
 *   Every power plant offers its energy at a price. Solar and wind are cheap (no fuel), combined-cycle gas is mid-priced, and old fuel-oil or peaker plants are expensive.
 *   CENACE fills demand starting with the cheapest plants and moving up the list until demand is covered.
@@ -54,8 +51,8 @@ CHALLENGE OBJECTIVES
 Build a reproducible, production-ready analytics pipeline for the Local Marginal Price (LMP) of the nine Monclova load-zone nodes (Jan 1, 2024 – Jun 30, 2025). 
 
 HOW TO RUN
-python run_pipeline.py                  # full run, including download
-python run_pipeline.py --skip-extract   # reuse the saved dataset
+python run_pipeline.py                  
+python run_pipeline.py --skip-extract   
 
 LIVE DASHBOARD
 https://cenace-challenge-tzqpi8grwfoqd8amtdpxve.streamlit.app/
